@@ -9,6 +9,7 @@ import seaborn as sns
 import pandas as pd
 import numpy as np
 from sklearn import metrics
+import time
 
 # Ruta a la carpeta principal que contiene las subcarpetas por lenguaje
 main_directory = 'data'
@@ -46,8 +47,10 @@ X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2,
 # Crear un pipeline que incluya un vectorizador de texto y un clasificador Random Forest
 model = make_pipeline(CountVectorizer(), RandomForestClassifier(random_state=42))
 
+start_time = time.time()
 # Entrenar el modelo
 model.fit(X_train, y_train)
+end_time = time.time()
 
 # Realizar predicciones en el conjunto de prueba
 predictions = model.predict(X_test)
@@ -58,6 +61,7 @@ print("Accuracy:", metrics.accuracy_score(y_test, predictions))
 print("Precision:", metrics.precision_score(y_test, predictions, average="macro"))
 print("Recall:", metrics.recall_score(y_test, predictions, average="macro"))
 print("F1 Score:", metrics.f1_score(y_test, predictions, average="macro"))
+print(f"Execution time: {end_time - start_time} seconds")
 
 # Obtener etiquetas únicas de las clases (lenguajes de programación)
 unique_labels = list(set(y_test))
@@ -82,6 +86,8 @@ plt.clf()
 # Datos para Random Forest y Naive Bayes
 rf_data = [0.9315589353612167, 0.946385594333084, 0.9307852965747702, 0.932410244923947]
 nb_data = [0.8555133079847909, 0.8972924181885839, 0.8484440267335005, 0.8329007525904902]
+rf_execution_time = 14.426496982574463
+nb_execution_time = 0.751129150390625
 
 # Etiquetas para cada métrica
 labels = ['Accuracy', 'Precision', 'Recall', 'F1 Score']
@@ -102,3 +108,19 @@ plt.xticks(rf_positions + 0.2, labels, fontsize=24)
 plt.yticks(fontsize=24)
 plt.legend(loc='lower right', fontsize=16)
 plt.savefig("out/nb_vs_rf.png")
+plt.clf()
+
+# Etiquetas para cada método
+labels = ['Random Forest', 'Naive Bayes']
+
+# Datos de tiempo de ejecución
+execution_times = [rf_execution_time, nb_execution_time]
+
+# Crear el gráfico de barras
+plt.bar(labels, execution_times, color=['royalblue', 'tomato'])
+
+# Añadir etiquetas y título
+plt.ylabel('Tiempo de Ejecución (segundos)', fontsize=24)
+plt.xticks(fontsize=24)
+plt.yticks(fontsize=24)
+plt.savefig("out/execution_time.png")

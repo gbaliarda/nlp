@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 from sklearn import metrics
+import time
 
 # Ruta a la carpeta principal que contiene las subcarpetas por lenguaje
 main_directory = 'data'
@@ -46,7 +47,9 @@ X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2,
 model = make_pipeline(CountVectorizer(), MultinomialNB())
 
 # Entrenar el modelo
+start_time = time.time()
 model.fit(X_train, y_train)
+end_time = time.time()
 
 # Realizar predicciones en el conjunto de prueba
 predictions = model.predict(X_test)
@@ -57,6 +60,7 @@ print("Accuracy:", metrics.accuracy_score(y_test, predictions))
 print("Precision:", metrics.precision_score(y_test, predictions, average="macro"))
 print("Recall:", metrics.recall_score(y_test, predictions, average="macro"))
 print("F1 Score:", metrics.f1_score(y_test, predictions, average="macro"))
+print(f"Execution time: {end_time - start_time} seconds")
 
 # Obtener etiquetas únicas de las clases (lenguajes de programación)
 unique_labels = list(set(y_test))
